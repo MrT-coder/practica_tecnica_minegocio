@@ -7,7 +7,6 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,11 +26,13 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 // Usamos Lombok para reducir código boilerplate
 @Entity
 @Table(name = "clientes")
 @Data
+@NoArgsConstructor
 @AllArgsConstructor 
 @Builder
 public class Cliente {
