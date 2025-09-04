@@ -84,8 +84,7 @@ La aplicación estará disponible en: `http://localhost:8080`
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| `GET` | `/api/clientes` | Buscar clientes (todos o por criterio) |
-| `GET` | `/api/clientes/{id}` | Obtener cliente por ID |
+| `GET` | `/api/clientes` | Buscar clientes (por criterio) |
 | `POST` | `/api/clientes` | Crear nuevo cliente con dirección matriz |
 | `PUT` | `/api/clientes/{id}` | Actualizar datos del cliente |
 | `DELETE` | `/api/clientes/{id}` | Eliminar cliente |
