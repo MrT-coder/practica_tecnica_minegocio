@@ -55,7 +55,7 @@ public class DireccionCliente {
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
     
-    // Método de utilidad para verificar si es matriz
+    // Verificar si es matriz
     public boolean esMatriz() {
         return Boolean.TRUE.equals(esMatriz);
     }

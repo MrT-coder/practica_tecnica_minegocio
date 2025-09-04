@@ -12,10 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controlador REST para gestión de direcciones de cliente
- * Implementa los casos: Registrar nueva dirección, Listar direcciones
- */
 @RestController
 @RequestMapping("/api/clientes")
 @RequiredArgsConstructor
@@ -26,8 +22,6 @@ public class DireccionClienteController {
 
     /**
      * CASO: Funcionalidad para registrar una nueva dirección por cliente
-     * API REST para POSTMAN donde se envíe objeto JSON
-     * Guarda los datos y retorna respuesta de éxito
      */
     @PostMapping("/{clienteId}/direcciones")
     public ResponseEntity<ApiResponseDto> registrarNuevaDireccion(
@@ -50,8 +44,6 @@ public class DireccionClienteController {
 
     /**
      * CASO: Funcionalidad para listar las direcciones adicionales del cliente
-     * API REST para POSTMAN donde se envíe el id de un cliente
-     * Retorna listado con direcciones asignadas, incluyendo la dirección matriz
      */
     @GetMapping("/{clienteId}/direcciones")
     public ResponseEntity<List<DireccionResponseDto>> listarDireccionesCliente(

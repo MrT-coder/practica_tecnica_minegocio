@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * CASO: Funcionalidad para crear un nuevo cliente con la dirección matriz
- * DTO de request para crear cliente
  */
 @Data
 @NoArgsConstructor

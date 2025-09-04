@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * DTO genérico para respuestas de la API
- * CASO: Eliminar cliente, Registrar nueva dirección (respuestas de éxito)
  */
 @Data
 @NoArgsConstructor

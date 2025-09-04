@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * CASO: Crear cliente con dirección matriz, Registrar nueva dirección
- * DTO de request para crear direcciones
  */
 @Data
 @NoArgsConstructor

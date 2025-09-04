@@ -14,10 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Servicio para gestión de clientes
- * Implementa los casos: Buscar, Crear, Editar, Eliminar
- */
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -28,7 +25,6 @@ public class ClienteService {
 
     /**
      * CASO: Funcionalidad para buscar y obtener un listado de clientes
-     * Busca por número de identidad O nombre
      */
     @Transactional(readOnly = true)
     public List<ClienteResponseDto> buscarClientes(String criterio) {
@@ -41,11 +37,11 @@ public class ClienteService {
             return new ArrayList<>();
         }
         
-        // Buscar por número de identificación (exacto y parcial)
+        // Buscar por número de identificación 
         clienteRepository.findByNumeroIdentificacion(criterio)
             .ifPresent(clientes::add);
         
-        // Buscar por número de identificación (parcial)
+        // Buscar por número de identificación 
         List<Cliente> clientesPorNumero = clienteRepository.findByNumeroIdentificacionContaining(criterio);
         clientes.addAll(clientesPorNumero);
         
@@ -62,7 +58,6 @@ public class ClienteService {
 
     /**
      * CASO: Funcionalidad para crear un nuevo cliente con la dirección matriz
-     * Valida que no exista más de un cliente con el mismo número de identificación
      */
     public ClienteResponseDto crearCliente(ClienteCreateRequestDto request) {
         log.info("Creando cliente con número de identificación: {}", request.getNumeroIdentificacion());
@@ -102,7 +97,6 @@ public class ClienteService {
 
     /**
      * CASO: Funcionalidad para editar los datos del cliente
-     * Solo actualiza datos del cliente, NO direcciones
      */
     public ClienteResponseDto editarCliente(Long id, ClienteUpdateRequestDto request) {
         log.info("Editando cliente con ID: {}", id);
@@ -135,33 +129,20 @@ public class ClienteService {
 
     /**
      * CASO: Funcionalidad para eliminar un cliente
-     * Retorna respuesta de éxito
      */
     public void eliminarCliente(Long id) {
         log.info("Eliminando cliente con ID: {}", id);
         
         // Verificar que el cliente existe
-        Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
+        if (!clienteRepository.existsById(id)) {
+            throw new IllegalArgumentException("Cliente no encontrado con ID: " + id);
+        }
         
-        // Eliminar cliente (cascada elimina direcciones)
         clienteRepository.deleteById(id);
         
         log.info("Cliente eliminado exitosamente con ID: {}", id);
     }
 
-    /**
-     * Obtener cliente por ID (método de utilidad)
-     */
-    @Transactional(readOnly = true)
-    public ClienteResponseDto obtenerClientePorId(Long id) {
-        log.info("Obteniendo cliente con ID: {}", id);
-        
-        Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
-        
-        return convertirAClienteResponseDto(cliente);
-    }
 
     /**
      * Convertir entidad Cliente a DTO de respuesta

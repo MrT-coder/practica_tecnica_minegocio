@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 /**
  * CASO: Listar direcciones, Respuesta con dirección matriz
- * DTO de respuesta para direcciones
  */
 @Data
 @NoArgsConstructor

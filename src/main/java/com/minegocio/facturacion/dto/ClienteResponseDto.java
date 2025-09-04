@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 /**
  * CASO: Funcionalidad para buscar y obtener un listado de clientes
- * DTO de respuesta que incluye la dirección matriz
  */
 @Data
 @NoArgsConstructor

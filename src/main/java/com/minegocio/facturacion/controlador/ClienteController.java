@@ -21,8 +21,6 @@ public class ClienteController {
 
     /**
      * CASO: Funcionalidad para buscar y obtener un listado de clientes
-     * API REST para POSTMAN con parámetro de búsqueda (Número de identidad o Nombre)
-     * Retorna listado de clientes, incluyendo la dirección matriz
      */
     @GetMapping
     public ResponseEntity<List<ClienteResponseDto>> buscarClientes(
@@ -35,11 +33,9 @@ public class ClienteController {
         return ResponseEntity.ok(clientes);
     }
 
+
     /**
      * CASO: Funcionalidad para crear un nuevo cliente con la dirección matriz
-     * API REST para POSTMAN donde se envíe objeto JSON
-     * Valida que no exista más de un cliente con el mismo número de identificación
-     * Retorna el cliente creado
      */
     @PostMapping
     public ResponseEntity<ClienteResponseDto> crearCliente(
@@ -59,9 +55,6 @@ public class ClienteController {
 
     /**
      * CASO: Funcionalidad para editar los datos del cliente
-     * API REST para POSTMAN donde se envíe objeto JSON con los datos del cliente
-     * Actualiza y retorna el cliente actualizado
-     * Valida que con la actualización no exista más de un cliente con el mismo número de identificación
      */
     @PutMapping("/{id}")
     public ResponseEntity<ClienteResponseDto> editarCliente(
@@ -82,8 +75,6 @@ public class ClienteController {
 
     /**
      * CASO: Funcionalidad para eliminar un cliente
-     * API REST para POSTMAN donde se envíe el id del cliente
-     * Elimina el cliente y retorna respuesta de éxito
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponseDto> eliminarCliente(@PathVariable Long id) {
@@ -102,21 +93,4 @@ public class ClienteController {
         }
     }
 
-    /**
-     * Endpoint adicional: Obtener cliente por ID
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<ClienteResponseDto> obtenerClientePorId(@PathVariable Long id) {
-        
-        log.info("GET /api/clientes/{} - Obteniendo cliente por ID", id);
-        
-        try {
-            ClienteResponseDto cliente = clienteService.obtenerClientePorId(id);
-            return ResponseEntity.ok(cliente);
-            
-        } catch (IllegalArgumentException e) {
-            log.error("Cliente no encontrado: {}", e.getMessage());
-            throw e;
-        }
-    }
 }

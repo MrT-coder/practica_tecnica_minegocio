@@ -28,7 +28,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// Usamos Lombok para reducir código boilerplate
+// Usamos Lombok 
 @Entity
 @Table(name = "clientes")
 @Data
@@ -80,7 +80,7 @@ public class Cliente {
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
     
-    // Método de utilidad para obtener la dirección matriz
+    // Obtener la dirección matriz
     public DireccionCliente getDireccionMatriz() {
         return direcciones.stream()
                 .filter(DireccionCliente::getEsMatriz)
@@ -88,13 +88,13 @@ public class Cliente {
                 .orElse(null);
     }
     
-    // Método de utilidad para agregar una dirección
+    // Agregar una dirección
     public void agregarDireccion(DireccionCliente direccion) {
         direcciones.add(direccion);
         direccion.setCliente(this);
     }
     
-    // Método de utilidad para remover una dirección
+    // Remover una dirección
     public void removerDireccion(DireccionCliente direccion) {
         direcciones.remove(direccion);
         direccion.setCliente(null);

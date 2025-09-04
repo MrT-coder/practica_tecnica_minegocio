@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * CASO: Funcionalidad para editar los datos del cliente
- * DTO de request para actualizar solo datos del cliente (NO direcciones)
  */
 @Data
 @NoArgsConstructor

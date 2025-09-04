@@ -14,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Servicio para gestión de direcciones de cliente
- * Implementa los casos: Registrar nueva dirección, Listar direcciones
- */
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -29,7 +26,6 @@ public class DireccionClienteService {
 
     /**
      * CASO: Funcionalidad para registrar una nueva dirección por cliente
-     * Retorna respuesta de éxito
      */
     public void registrarNuevaDireccion(Long clienteId, DireccionCreateRequestDto request) {
         log.info("Registrando nueva dirección para cliente ID: {}", clienteId);
@@ -55,7 +51,6 @@ public class DireccionClienteService {
 
     /**
      * CASO: Funcionalidad para listar las direcciones adicionales del cliente
-     * Retorna listado con direcciones asignadas, incluyendo la dirección matriz
      */
     @Transactional(readOnly = true)
     public List<DireccionResponseDto> listarDireccionesCliente(Long clienteId) {
