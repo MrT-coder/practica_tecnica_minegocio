@@ -26,7 +26,7 @@ public class DireccionResponseDto {
     
     private String direccion;
     
-    @JsonProperty("es_matriz")
+    @JsonProperty("es_matriz") // Anotación para mapear el nombre JSON
     private Boolean esMatriz;
     
     @JsonProperty("fecha_creacion")
