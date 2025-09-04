@@ -11,10 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controlador REST para gestión de clientes
- * Implementa los casos: Buscar, Crear, Editar, Eliminar
- */
 @RestController
 @RequestMapping("/api/clientes")
 @RequiredArgsConstructor
