@@ -29,7 +29,7 @@ class ClienteServiceTest {
 
     @Test
     void crearCliente_DeberiaGuardarCliente() {
-        // Given
+        // Given - Preparar
         DireccionCreateRequestDto direccionRequest = DireccionCreateRequestDto.builder()
                 .provincia("Pichincha")
                 .ciudad("Quito")
@@ -57,10 +57,10 @@ class ClienteServiceTest {
         when(clienteRepository.existsByNumeroIdentificacion("1234567890")).thenReturn(false);
         when(clienteRepository.save(any(Cliente.class))).thenReturn(clienteGuardado);
 
-        // When
+        // When - Ejecutar
         ClienteResponseDto resultado = clienteService.crearCliente(request);
 
-        // Then
+        // Then - Verificar
         assertNotNull(resultado);
         assertEquals("Juan Pérez", resultado.getNombres());
         verify(clienteRepository).save(any(Cliente.class));

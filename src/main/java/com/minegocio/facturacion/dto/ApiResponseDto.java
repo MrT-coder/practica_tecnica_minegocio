@@ -25,11 +25,11 @@ public class ApiResponseDto {
     private String timestamp;
     
     public static ApiResponseDto success(String message) {
-        return ApiResponseDto.builder()
-                .success(true)
-                .message(message)
-                .timestamp(java.time.LocalDateTime.now().toString())
-                .build();
+        return ApiResponseDto.builder() // Inicia la construcción del objeto ApiResponseDto
+                .success(true) // Establece el campo 'success' a true
+                .message(message) // Establece el mensaje proporcionado
+                .timestamp(java.time.LocalDateTime.now().toString()) // Establece la marca de tiempo actual
+                .build(); // Construye y devuelve el objeto ApiResponseDto
     }
     
     public static ApiResponseDto success(String message, Object data) {

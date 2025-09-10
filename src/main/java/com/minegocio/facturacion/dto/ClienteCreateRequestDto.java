@@ -19,7 +19,7 @@ public class ClienteCreateRequestDto {
     
     @NotBlank(message = "El tipo de identificación es obligatorio")
     @Pattern(regexp = "^(CEDULA|RUC)$", message = "El tipo de identificación debe ser CEDULA o RUC")
-    @JsonProperty("tipo_identificacion")
+    @JsonProperty("tipo_identificacion") // Mapeo del campo JSON a la propiedad Java
     private String tipoIdentificacion;
     
     @NotBlank(message = "El número de identificación es obligatorio")

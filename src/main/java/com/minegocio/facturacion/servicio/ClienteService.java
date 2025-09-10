@@ -1,6 +1,7 @@
 package com.minegocio.facturacion.servicio;
 
 import com.minegocio.facturacion.dto.*;
+import com.minegocio.facturacion.dto.validation.ValidarIdentificacion;
 import com.minegocio.facturacion.modelo.Cliente;
 import com.minegocio.facturacion.modelo.DireccionCliente;
 import com.minegocio.facturacion.modelo.TipoIdentificacion;
@@ -14,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -26,29 +26,33 @@ public class ClienteService {
     /**
      * CASO: Funcionalidad para buscar y obtener un listado de clientes
      */
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // Gestiona automáticamente la transacción en la base de datos
     public List<ClienteResponseDto> buscarClientes(String criterio) {
         log.info("Buscando clientes con criterio: {}", criterio);
-        
+
         List<Cliente> clientes = new ArrayList<>();
-        
+
         if (criterio == null || criterio.trim().isEmpty()) {
             // Si no hay criterio, devolver lista vacía según especificación
             return new ArrayList<>();
         }
-        
-        // Buscar por número de identificación 
+
+        // Buscar por número de identificación
         clienteRepository.findByNumeroIdentificacion(criterio)
-            .ifPresent(clientes::add);
-        
-        // Buscar por número de identificación 
+                .ifPresent(clientes::add);
+
+        // Buscar por correo electrónico
+        List<Cliente> clientePorCorreo = clienteRepository.findByCorreoContainingIgnoreCase(criterio);
+        clientes.addAll(clientePorCorreo);
+
+        // Buscar por número de identificación
         List<Cliente> clientesPorNumero = clienteRepository.findByNumeroIdentificacionContaining(criterio);
         clientes.addAll(clientesPorNumero);
-        
+
         // Buscar por nombres
         List<Cliente> clientesPorNombre = clienteRepository.findByNombresContainingIgnoreCase(criterio);
         clientes.addAll(clientesPorNombre);
-        
+
         // Eliminar duplicados y convertir a DTO
         return clientes.stream()
                 .distinct()
@@ -61,12 +65,30 @@ public class ClienteService {
      */
     public ClienteResponseDto crearCliente(ClienteCreateRequestDto request) {
         log.info("Creando cliente con número de identificación: {}", request.getNumeroIdentificacion());
-        
+
         // Validar que no exista cliente con mismo número de identificación
         if (clienteRepository.existsByNumeroIdentificacion(request.getNumeroIdentificacion())) {
-            throw new IllegalArgumentException("Ya existe un cliente con el número de identificación: " + request.getNumeroIdentificacion());
+            throw new IllegalArgumentException(
+                    "Ya existe un cliente con el número de identificación: " + request.getNumeroIdentificacion());
         }
-        
+
+        // Validar Ruc
+        if (request.getTipoIdentificacion().equals("RUC")) {
+            ValidarIdentificacion validarRuc = new ValidarIdentificacion();
+            if (!validarRuc.esRucValido(request.getNumeroIdentificacion())) {
+                throw new IllegalArgumentException(
+                        "El número de RUC no es válido: " + request.getNumeroIdentificacion());
+            }
+        }
+
+        if (request.getTipoIdentificacion().equals("CEDULA")) {
+            ValidarIdentificacion validarCedula = new ValidarIdentificacion();
+            if (!validarCedula.esCedulaValida(request.getNumeroIdentificacion())) {
+                throw new IllegalArgumentException(
+                        "El número de Cédula no es válido: " + request.getNumeroIdentificacion());
+            }
+        }
+
         // Crear cliente
         Cliente cliente = Cliente.builder()
                 .tipoIdentificacion(TipoIdentificacion.valueOf(request.getTipoIdentificacion()))
@@ -75,7 +97,7 @@ public class ClienteService {
                 .correo(request.getCorreo())
                 .numeroCelular(request.getNumeroCelular())
                 .build();
-        
+
         // Crear dirección matriz
         DireccionCliente direccionMatriz = DireccionCliente.builder()
                 .provincia(request.getDireccionMatriz().getProvincia())
@@ -84,13 +106,13 @@ public class ClienteService {
                 .esMatriz(true)
                 .cliente(cliente)
                 .build();
-        
+
         // Agregar dirección al cliente
         cliente.agregarDireccion(direccionMatriz);
-        
+
         // Guardar cliente (cascada guarda la dirección)
         Cliente clienteGuardado = clienteRepository.save(cliente);
-        
+
         log.info("Cliente creado exitosamente con ID: {}", clienteGuardado.getId());
         return convertirAClienteResponseDto(clienteGuardado);
     }
@@ -100,29 +122,47 @@ public class ClienteService {
      */
     public ClienteResponseDto editarCliente(Long id, ClienteUpdateRequestDto request) {
         log.info("Editando cliente con ID: {}", id);
-        
+
         // Buscar cliente existente
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
-        
+
         // Validar que no exista otro cliente con mismo número de identificación
         clienteRepository.findByNumeroIdentificacion(request.getNumeroIdentificacion())
                 .ifPresent(clienteExistente -> {
                     if (!clienteExistente.getId().equals(id)) {
-                        throw new IllegalArgumentException("Ya existe otro cliente con el número de identificación: " + request.getNumeroIdentificacion());
+                        throw new IllegalArgumentException("Ya existe otro cliente con el número de identificación: "
+                                + request.getNumeroIdentificacion());
                     }
                 });
-        
+
+        // Validar Ruc
+        if (request.getTipoIdentificacion().equals("RUC")) {
+            ValidarIdentificacion validarRuc = new ValidarIdentificacion();
+            if (!validarRuc.esRucValido(request.getNumeroIdentificacion())) {
+                throw new IllegalArgumentException(
+                        "El número de RUC no es válido: " + request.getNumeroIdentificacion());
+            }
+        }
+
+        if (request.getTipoIdentificacion().equals("CEDULA")) {
+            ValidarIdentificacion validarCedula = new ValidarIdentificacion();
+            if (!validarCedula.esCedulaValida(request.getNumeroIdentificacion())) {
+                throw new IllegalArgumentException(
+                        "El número de Cédula no es válido: " + request.getNumeroIdentificacion());
+            }
+        }
+
         // Actualizar solo datos del cliente
         cliente.setTipoIdentificacion(TipoIdentificacion.valueOf(request.getTipoIdentificacion()));
         cliente.setNumeroIdentificacion(request.getNumeroIdentificacion());
         cliente.setNombres(request.getNombres());
         cliente.setCorreo(request.getCorreo());
         cliente.setNumeroCelular(request.getNumeroCelular());
-        
+
         // Guardar cambios
         Cliente clienteActualizado = clienteRepository.save(cliente);
-        
+
         log.info("Cliente actualizado exitosamente con ID: {}", clienteActualizado.getId());
         return convertirAClienteResponseDto(clienteActualizado);
     }
@@ -132,24 +172,38 @@ public class ClienteService {
      */
     public void eliminarCliente(Long id) {
         log.info("Eliminando cliente con ID: {}", id);
-        
+
         // Verificar que el cliente existe
         if (!clienteRepository.existsById(id)) {
             throw new IllegalArgumentException("Cliente no encontrado con ID: " + id);
         }
-        
+
         clienteRepository.deleteById(id);
-        
+
         log.info("Cliente eliminado exitosamente con ID: {}", id);
     }
 
+    /**
+     * CASO: FILTRO POR TIPO DE IDENTIFICACIÓN
+     */
+    @Transactional(readOnly = true)
+    public List<ClienteResponseDto> filtrarPorTipo(TipoIdentificacion tipo) {
+
+        log.info("Filtrando clientes por tipo de identificación: {}", tipo);
+
+        List<Cliente> clientes = clienteRepository.findByTipoIdentificacion(tipo);
+
+        return clientes.stream()
+                .map(this::convertirAClienteResponseDto)
+                .collect(Collectors.toList());
+    }
 
     /**
      * Convertir entidad Cliente a DTO de respuesta
      */
     private ClienteResponseDto convertirAClienteResponseDto(Cliente cliente) {
         DireccionResponseDto direccionMatriz = null;
-        
+
         // Obtener dirección matriz
         DireccionCliente direccion = cliente.getDireccionMatriz();
         if (direccion != null) {
@@ -163,7 +217,7 @@ public class ClienteService {
                     .fechaActualizacion(direccion.getFechaActualizacion())
                     .build();
         }
-        
+
         return ClienteResponseDto.builder()
                 .id(cliente.getId())
                 .tipoIdentificacion(cliente.getTipoIdentificacion().name())

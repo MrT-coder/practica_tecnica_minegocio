@@ -1,6 +1,8 @@
 package com.minegocio.facturacion.repositorio;
 
 import com.minegocio.facturacion.modelo.Cliente;
+import com.minegocio.facturacion.modelo.TipoIdentificacion;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
@@ -36,4 +38,14 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
      * CASO: Crear cliente, Editar cliente
      */
     boolean existsByNumeroIdentificacion(String numeroIdentificacion);
+
+    /**
+     * BÚSQUEDA POR CORREO ELECTRÓNICO
+     */
+    List<Cliente> findByCorreoContainingIgnoreCase(String correo);
+
+    /**
+     * FILTRO POR TIPO DE IDENTIFICACIÓN
+     */
+    List<Cliente> findByTipoIdentificacion(TipoIdentificacion tipo);
 }

@@ -1,6 +1,7 @@
 package com.minegocio.facturacion.controlador;
 
 import com.minegocio.facturacion.dto.*;
+import com.minegocio.facturacion.modelo.TipoIdentificacion;
 import com.minegocio.facturacion.servicio.ClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/clientes")
-@RequiredArgsConstructor
-@Slf4j
+@RequiredArgsConstructor // Constructor con argumentos requeridos
+@Slf4j // Logger
 public class ClienteController {
 
     private final ClienteService clienteService;
@@ -33,13 +37,31 @@ public class ClienteController {
         return ResponseEntity.ok(clientes);
     }
 
+    /**
+     * FILTRO POR TIPO DE IDENTIFICACIÓN
+     */
+    @GetMapping("/filtro")
+    public ResponseEntity<List<ClienteResponseDto>> filtrarPorTipo (@RequestParam(value = "tipo", required = false) String tipo) {
+
+        log.info("Filtro cliente por tipo: {}",tipo);
+
+        try {
+            TipoIdentificacion tipoEnum = TipoIdentificacion.valueOf(tipo.toUpperCase()); // Convertir String a Enum
+            List<ClienteResponseDto> clientes = clienteService.filtrarPorTipo(tipoEnum);
+            return ResponseEntity.ok(clientes);
+
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Tipo de identificación inválido: " + tipo);
+        }
+    }
+
 
     /**
      * CASO: Funcionalidad para crear un nuevo cliente con la dirección matriz
      */
     @PostMapping
     public ResponseEntity<ClienteResponseDto> crearCliente(
-            @Valid @RequestBody ClienteCreateRequestDto request) {
+            @Valid @RequestBody ClienteCreateRequestDto request) { 
         
         log.info("POST /api/clientes - Creando cliente: {}", request.getNumeroIdentificacion());
         
@@ -92,5 +114,8 @@ public class ClienteController {
             throw e;
         }
     }
+
+   
+    
 
 }

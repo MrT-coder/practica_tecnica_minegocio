@@ -65,7 +65,7 @@ public class DireccionClienteService {
                 .findByClienteIdOrderByEsMatrizDescFechaCreacionAsc(clienteId);
         
         // Convertir a DTOs
-        return direcciones.stream()
+        return direcciones.stream() // usamos stream para procesar la lista de direcciones
                 .map(this::convertirADireccionResponseDto)
                 .collect(Collectors.toList());
     }

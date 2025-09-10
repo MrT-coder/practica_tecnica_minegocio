@@ -29,26 +29,28 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 // Usamos Lombok 
-@Entity
+@Entity // Indica que es una entidad de JPA
 @Table(name = "clientes")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor 
-@Builder
+@Data // Crea getters, setters, toString, equals y hashCode
+@NoArgsConstructor // Crea el constructor sin argumentos
+@AllArgsConstructor // Crea el constructor con todos los argumentos
+@Builder // Crea el patrón de diseño Builder, lo usamos para crear instancias de la clase
+
 public class Cliente {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    // Usamos JPA para mapear la clase a una tabla de base de datos
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    private Long id; // Lo hacemos private para encapsular los datos
     
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_identificacion", nullable = false)
-    @NotNull(message = "El tipo de identificación es obligatorio")
+    @NotNull(message = "El tipo de identificación es obligatorio") // Validamos a nivel de aplicación
     private TipoIdentificacion tipoIdentificacion;
     
     @Column(name = "numero_identificacion", nullable = false, unique = true, length = 20)
-    @NotBlank(message = "El número de identificación es obligatorio")
-    @Size(min = 10, max = 20, message = "El número de identificación debe tener entre 10 y 20 caracteres")
+    @NotBlank(message = "El número de identificación es obligatorio") // Valiamos el String no sea nulo ni vacío
+    @Size(min = 10, max = 20, message = "El número de identificación debe tener entre 10 y 20 caracteres") // Validamos el tamaño del String
     private String numeroIdentificacion;
     
     @Column(name = "nombres", nullable = false, length = 100)

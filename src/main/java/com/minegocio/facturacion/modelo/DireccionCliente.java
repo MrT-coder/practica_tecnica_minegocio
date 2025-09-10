@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "direcciones_cliente")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data // Genera getters, setters, toString, equals y hashCode
+@NoArgsConstructor // Constructor sin argumentos
+@AllArgsConstructor // Constructor con todos los argumentos
+@Builder // Patrón de diseño Builder
 public class DireccionCliente {
 
     @Id
@@ -39,7 +39,7 @@ public class DireccionCliente {
     private String direccion;
     
     @Column(name = "es_matriz", nullable = false)
-    @Builder.Default
+    @Builder.Default // Valor por defecto para el patrón Builder
     private Boolean esMatriz = false;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -55,7 +55,7 @@ public class DireccionCliente {
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
     
-    // Verificar si es matriz
+    // Verificar si es matriz, manejando posible null
     public boolean esMatriz() {
         return Boolean.TRUE.equals(esMatriz);
     }
